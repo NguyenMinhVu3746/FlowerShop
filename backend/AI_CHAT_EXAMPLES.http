@@ -1,0 +1,208 @@
+# ====================================
+# 🤖 AI CHATBOT API - TEST EXAMPLES
+# ====================================
+# Use with REST Client extension (VS Code)
+# or copy to Postman/Thunder Client
+# ====================================
+
+@baseUrl = http://localhost:3000
+
+### =============================================
+### 1. Chat Text Đơn Giản
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Tôi muốn tặng hoa cho mẹ nhân ngày sinh nhật, nên chọn loại hoa gì?"
+}
+
+### =============================================
+### 2. Chat Text với Conversation History
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Còn mẫu nào khác không?",
+  "conversationHistory": [
+    {
+      "role": "user",
+      "parts": "Tôi muốn tìm hoa hồng"
+    },
+    {
+      "role": "model",
+      "parts": "Shop có nhiều mẫu hoa hồng đẹp. Bạn muốn xem loại nào?"
+    },
+    {
+      "role": "user",
+      "parts": "Tầm 500k"
+    },
+    {
+      "role": "model",
+      "parts": "Dạ có ạ! Mẫu Bó Hồng Yêu Thương 450k và Hồng Ngọt Ngào 520k rất đẹp."
+    }
+  ]
+}
+
+### =============================================
+### 3. Gửi Ảnh Để Tìm Sản Phẩm (Image Only)
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCABkAGQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlbaWmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9k="
+}
+
+### =============================================
+### 4. Text + Image (Kết Hợp)
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Tôi thích bó hoa này, shop có mẫu tương tự không? Giá khoảng bao nhiêu?",
+  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCABkAGQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlbaWmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U6KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9k=",
+  "conversationHistory": [
+    {
+      "role": "user",
+      "parts": "Xin chào"
+    },
+    {
+      "role": "model",
+      "parts": "Chào bạn! Tôi là trợ lý AI của Hoa Shop. Bạn cần tư vấn hoa hôm nay không?"
+    }
+  ]
+}
+
+### =============================================
+### 5. Hỏi về Dịp Cụ Thể
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Tôi muốn mua hoa khai trương, tầm 1 triệu"
+}
+
+### =============================================
+### 6. Hỏi về Loại Hoa
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Cho tôi xem các mẫu hoa hồng đẹp"
+}
+
+### =============================================
+### 7. Follow-up Question
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Có thêm mẫu nào khác không?",
+  "conversationHistory": [
+    {
+      "role": "user",
+      "parts": "Cho tôi xem các mẫu hoa hồng đẹp"
+    },
+    {
+      "role": "model",
+      "parts": "Shop có 3 mẫu hoa hồng đẹp:\n1. Bó Hồng Yêu Thương - 450,000đ\n2. Love Symphony - 680,000đ\n3. Hồng Pháp Romance - 820,000đ"
+    }
+  ]
+}
+
+### =============================================
+### 8. Gửi Ảnh + Hỏi Custom
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Tôi muốn bó hoa như trong ảnh nhưng thêm hoa tulip được không?",
+  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD..."
+}
+
+### =============================================
+### 9. Hỏi Chung Chung (No Keywords)
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Tôi cần mua hoa"
+}
+
+### =============================================
+### 10. Gửi Ảnh Không Rõ
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Đây là hoa gì vậy?",
+  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD..."
+}
+
+### =============================================
+### 11. Multi-turn Conversation (Complex)
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "message": "Vậy mẫu nào phù hợp tặng người yêu hơn?",
+  "conversationHistory": [
+    {
+      "role": "user",
+      "parts": "Tôi muốn tìm hoa tặng sinh nhật"
+    },
+    {
+      "role": "model",
+      "parts": "Sinh nhật thì hoa hồng và lily rất phù hợp ạ. Bạn muốn tặng ai?"
+    },
+    {
+      "role": "user",
+      "parts": "Tặng bạn gái hoặc người yêu"
+    },
+    {
+      "role": "model",
+      "parts": "Tuyệt vời! Shop có:\n1. Bó Hồng Đỏ Passion - 520,000đ\n2. Lily Trắng Elegant - 650,000đ\n3. Mix Hồng Lily Premium - 880,000đ"
+    }
+  ]
+}
+
+### =============================================
+### 12. Test Error - No Message & No Image
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "conversationHistory": []
+}
+
+### =============================================
+### 13. Test Error - Invalid Image Format
+### =============================================
+POST {{baseUrl}}/api/ai/chat
+Content-Type: application/json
+
+{
+  "image": "invalid_base64_string"
+}
+
+### =============================================
+### DEPRECATED: Image Search API (Old Way)
+### Use /api/ai/chat with image instead
+### =============================================
+POST {{baseUrl}}/api/ai/image-search
+Content-Type: application/json
+
+{
+  "image": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD..."
+}

@@ -1,0 +1,1763 @@
+{
+  "info": {
+    "name": "Hoa Shop Backend API",
+    "description": "Complete API collection for Flower Shop eCommerce Backend\n\n**60 endpoints total:**\n- Authentication & User Management\n- Product & Discovery\n- Checkout & Orders\n- File Upload\n- AI Features\n- Admin Management\n\n**Setup:**\n1. Import this collection to Postman\n2. Set environment variables:\n   - `base_url`: http://localhost:3000\n   - `access_token`: (auto-set after login)\n   - `admin_token`: (auto-set after admin login)\n\n**Created:** December 3, 2025",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "product_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "category_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('access_token', response.data.accessToken);",
+                  "    pm.environment.set('user_id', response.data.user.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@hoashop.com\",\n  \"password\": \"password123\",\n  \"fullname\": \"Nguyen Van A\",\n  \"phone\": \"0123456789\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('access_token', response.data.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@hoashop.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('admin_token', response.data.accessToken);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@hoashop.com\",\n  \"password\": \"admin123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@hoashop.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/forgot-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "forgot-password"]
+            }
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset-token-from-email\",\n  \"password\": \"newpassword123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/reset-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "reset-password"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 User Management",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullname\": \"Nguyen Van B\",\n  \"phone\": \"0987654321\",\n  \"birthday\": \"1990-01-01\",\n  \"gender\": \"male\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get Addresses",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/address",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "address"]
+            }
+          }
+        },
+        {
+          "name": "Add Address",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Nhà riêng\",\n  \"fullAddress\": \"123 Nguyen Trai\",\n  \"ward\": \"Phường 1\",\n  \"district\": \"Quận 1\",\n  \"province\": \"TP. Hồ Chí Minh\",\n  \"phoneReceiver\": \"0123456789\",\n  \"nameReceiver\": \"Nguyen Van A\",\n  \"isDefault\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/address",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "address"]
+            }
+          }
+        },
+        {
+          "name": "Get Orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/orders?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Wishlist",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/wishlist",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "wishlist"]
+            }
+          }
+        },
+        {
+          "name": "Toggle Wishlist",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{product_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/wishlist/toggle",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "wishlist", "toggle"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏠 Discovery & Home",
+      "item": [
+        {
+          "name": "Get Banners",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/home/banner",
+              "host": ["{{base_url}}"],
+              "path": ["api", "home", "banner"]
+            }
+          }
+        },
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/home/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "home", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data.products.length > 0) {",
+                  "        pm.environment.set('product_id', response.data.products[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/home/products?page=1&limit=12&sortBy=newest",
+              "host": ["{{base_url}}"],
+              "path": ["api", "home", "products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "12"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "newest"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/search?q=hoa hong",
+              "host": ["{{base_url}}"],
+              "path": ["api", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "hoa hong"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🌹 Products",
+      "item": [
+        {
+          "name": "Get Product Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/product/hoa-hong-do",
+              "host": ["{{base_url}}"],
+              "path": ["api", "product", "hoa-hong-do"]
+            }
+          }
+        },
+        {
+          "name": "Get Product Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/product/hoa-hong-do-tinh-yeu/reviews?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "product", "hoa-hong-do-tinh-yeu", "reviews"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Hoa rất đẹp và tươi, ship nhanh!\",\n  \"images\": [\"https://example.com/image1.jpg\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/product/hoa-hong-do-tinh-yeu/review",
+              "host": ["{{base_url}}"],
+              "path": ["api", "product", "hoa-hong-do-tinh-yeu", "review"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🛒 Checkout & Orders",
+      "item": [
+        {
+          "name": "Validate Voucher",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/voucher/validate?code=SUMMER2024",
+              "host": ["{{base_url}}"],
+              "path": ["api", "voucher", "validate"],
+              "query": [
+                {
+                  "key": "code",
+                  "value": "SUMMER2024"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Checkout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('order_id', response.data.order.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"variantId\": \"variant-uuid\",\n      \"quantity\": 2\n    }\n  ],\n  \"receiver\": {\n    \"name\": \"Nguyen Van B\",\n    \"phone\": \"0987654321\",\n    \"address\": \"456 Le Loi, Quan 1, TP.HCM\",\n    \"deliveryDate\": \"2025-12-10\",\n    \"deliverySlot\": \"8-10h\"\n  },\n  \"note\": \"Giao hàng cẩn thận\",\n  \"messageCard\": \"Chúc mừng sinh nhật!\",\n  \"senderType\": \"NAMED\",\n  \"paymentMethod\": \"COD\",\n  \"voucherCode\": \"SUMMER2024\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/checkout",
+              "host": ["{{base_url}}"],
+              "path": ["api", "checkout"]
+            }
+          }
+        },
+        {
+          "name": "AI Suggest Message",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"occasion\": \"sinh nhật\",\n  \"recipient\": \"mẹ\",\n  \"relationship\": \"con\",\n  \"tone\": \"casual\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/checkout/ai-suggest-message",
+              "host": ["{{base_url}}"],
+              "path": ["api", "checkout", "ai-suggest-message"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📤 Upload",
+      "item": [
+        {
+          "name": "Upload Single Image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"data:image/jpeg;base64,/9j/4AAQSkZJRg...\",\n  \"folder\": \"hoashop/products\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/upload",
+              "host": ["{{base_url}}"],
+              "path": ["api", "upload"]
+            }
+          }
+        },
+        {
+          "name": "Upload Multiple Images",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"images\": [\n    \"data:image/jpeg;base64,/9j/4AAQ...\",\n    \"data:image/jpeg;base64,/9j/4BBQ...\"\n  ],\n  \"folder\": \"hoashop/reviews\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/upload",
+              "host": ["{{base_url}}"],
+              "path": ["api", "upload"]
+            }
+          }
+        },
+        {
+          "name": "Delete Image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/upload?publicId=hoashop/products/abc123",
+              "host": ["{{base_url}}"],
+              "path": ["api", "upload"],
+              "query": [
+                {
+                  "key": "publicId",
+                  "value": "hoashop/products/abc123"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🤖 AI Features",
+      "item": [
+        {
+          "name": "AI Chat - Text Only",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Tôi muốn tặng hoa cho mẹ nhân ngày sinh nhật, nên chọn loại hoa gì?\",\n  \"conversationHistory\": [\n    {\n      \"role\": \"user\",\n      \"parts\": \"Xin chào\"\n    },\n    {\n      \"role\": \"model\",\n      \"parts\": \"Xin chào! Tôi có thể giúp gì cho bạn?\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ai/chat",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ai", "chat"]
+            },
+            "description": "Chat với AI bằng text thuần. AI sẽ tư vấn sản phẩm dựa trên câu hỏi."
+          }
+        },
+        {
+          "name": "AI Chat - Image Only",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"data:image/jpeg;base64,/9j/4AAQSkZJRg...\",\n  \"conversationHistory\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ai/chat",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ai", "chat"]
+            },
+            "description": "Gửi ảnh hoa để AI phân tích và tìm sản phẩm tương tự. Không cần tin nhắn text."
+          }
+        },
+        {
+          "name": "AI Chat - Text + Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Tôi thích bó hoa này, shop có mẫu tương tự không?\",\n  \"image\": \"data:image/jpeg;base64,/9j/4AAQSkZJRg...\",\n  \"conversationHistory\": [\n    {\n      \"role\": \"user\",\n      \"parts\": \"Tôi muốn tìm hoa hồng\"\n    },\n    {\n      \"role\": \"model\",\n      \"parts\": \"Shop có nhiều mẫu hoa hồng đẹp. Bạn muốn xem loại nào?\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ai/chat",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ai", "chat"]
+            },
+            "description": "Gửi cả text và image trong cùng 1 tin nhắn. AI sẽ phân tích ảnh và kết hợp với câu hỏi để tư vấn."
+          }
+        },
+        {
+          "name": "AI Image Search",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"image\": \"data:image/jpeg;base64,/9j/4AAQSkZJRg...\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ai/image-search",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ai", "image-search"]
+            },
+            "description": "⚠️ DEPRECATED: Sử dụng /api/ai/chat với image thay thế. Endpoint này vẫn hoạt động để tương thích ngược."
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin - Categories",
+      "item": [
+        {
+          "name": "Get Categories (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data.categories.length > 0) {",
+                  "        pm.environment.set('category_id', response.data.categories[0].id);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/category",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "category"]
+            }
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Hoa Sinh Nhật\",\n  \"description\": \"Các loại hoa dành cho sinh nhật\",\n  \"image\": \"https://example.com/category.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/category",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "category"]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Hoa Sinh Nhật Updated\",\n  \"description\": \"Updated description\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/category/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "category", "{{category_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/category/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "category", "{{category_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin - Products",
+      "item": [
+        {
+          "name": "Get Products (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/product?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "product"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Hoa Hồng Đỏ Sang Trọng\",\n  \"description\": \"Bó hoa hồng đỏ tươi đẹp\",\n  \"images\": [\"https://example.com/1.jpg\", \"https://example.com/2.jpg\"],\n  \"categoryId\": \"{{category_id}}\",\n  \"metaTitle\": \"Hoa Hồng Đỏ\",\n  \"metaDescription\": \"Hoa hồng đỏ tươi\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/product",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "product"]
+            }
+          }
+        },
+        {
+          "name": "Get Product Detail (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/product/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "product", "{{product_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Hoa Hồng Đỏ Updated\",\n  \"description\": \"Updated description\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/product/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "product", "{{product_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/product/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "product", "{{product_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Add Product Variant",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"size\": \"M\",\n  \"price\": 500000,\n  \"description\": \"Bó hoa size M - 20 bông\",\n  \"stock\": 50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/product/{{product_id}}/variant",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "product", "{{product_id}}", "variant"]
+            }
+          }
+        },
+        {
+          "name": "Get Product Flowers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/product/{{product_id}}/flowers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "product", "{{product_id}}", "flowers"]
+            }
+          }
+        },
+        {
+          "name": "Map Product Flowers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"flowers\": [\n    {\n      \"flowerId\": \"flower-uuid-1\",\n      \"quantity\": 10\n    },\n    {\n      \"flowerId\": \"flower-uuid-2\",\n      \"quantity\": 5\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/product/{{product_id}}/flowers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "product", "{{product_id}}", "flowers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin - Flowers",
+      "item": [
+        {
+          "name": "Get Flowers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/flower?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "flower"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Flower",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Hoa Hồng Đỏ Ecuador\",\n  \"description\": \"Hoa hồng đỏ cao cấp nhập khẩu\",\n  \"image\": \"https://example.com/rose.jpg\",\n  \"price\": 50000,\n  \"unit\": \"cành\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/flower",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "flower"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin - Orders",
+      "item": [
+        {
+          "name": "Get Orders (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/orders?status=PENDING&page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "orders"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/order/{{order_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "order", "{{order_id}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Print Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/order/{{order_id}}/print",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "order", "{{order_id}}", "print"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin - Reviews",
+      "item": [
+        {
+          "name": "Get Reviews (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/reviews?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "reviews"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "hidden",
+                  "value": "false",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Hide/Show Review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isHidden\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/review/review-id/hide",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "review", "review-id", "hide"]
+            }
+          }
+        },
+        {
+          "name": "Reply Review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Cảm ơn bạn đã đánh giá. Chúng tôi rất vui vì bạn hài lòng!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/review/review-id/reply",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "review", "review-id", "reply"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin - Marketing",
+      "item": [
+        {
+          "name": "Get Vouchers",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/voucher",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "voucher"]
+            }
+          }
+        },
+        {
+          "name": "Create Voucher",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"SUMMER2024\",\n  \"description\": \"Giảm 20% cho mùa hè\",\n  \"type\": \"PERCENTAGE\",\n  \"value\": 20,\n  \"minOrder\": 200000,\n  \"maxDiscount\": 100000,\n  \"startDate\": \"2024-06-01\",\n  \"endDate\": \"2024-08-31\",\n  \"quantity\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/voucher",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "voucher"]
+            }
+          }
+        },
+        {
+          "name": "Get Banners (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/banner",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "banner"]
+            }
+          }
+        },
+        {
+          "name": "Create Banner",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Khuyến mãi mùa hè\",\n  \"image\": \"https://example.com/banner.jpg\",\n  \"link\": \"/promotion/summer\",\n  \"order\": 1,\n  \"description\": \"Giảm giá đến 50%\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/banner",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "banner"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin - Dashboard",
+      "item": [
+        {
+          "name": "Dashboard Overview",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/dashboard/overview",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "dashboard", "overview"]
+            }
+          }
+        },
+        {
+          "name": "Revenue Chart",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/dashboard/revenue-chart?startDate=2025-01-01&endDate=2025-12-31",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "dashboard", "revenue-chart"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2025-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2025-12-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Top Products",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/dashboard/top-products?limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "dashboard", "top-products"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍💼 Admin - Inventory",
+      "item": [
+        {
+          "name": "Get Stock List",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/inventory/stock?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "inventory", "stock"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Stock",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"flowerId\": \"flower-uuid\",\n  \"type\": \"IMPORT\",\n  \"quantity\": 100,\n  \"note\": \"Nhập hàng đầu tháng\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/admin/inventory/stock",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "inventory", "stock"]
+            }
+          }
+        },
+        {
+          "name": "Get Stock Logs",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/admin/inventory/logs?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "admin", "inventory", "logs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "type",
+                  "value": "IMPORT",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

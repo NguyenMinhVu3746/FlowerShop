@@ -1,0 +1,308 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USER & AUTH ====================
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  phone             String?  @unique
+  password          String
+  avatar            String?
+  fullname          String
+  birthday          DateTime?
+  gender            String?  // male, female, other
+  role              Role     @default(USER)
+  resetToken        String?  @unique
+  resetTokenExpires DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  addresses Address[]
+  orders    Order[]
+  reviews   Review[]
+  wishlists Wishlist[]
+
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Address {
+  id            String   @id @default(uuid())
+  userId        String
+  title         String   // Nhà, Văn phòng, etc.
+  fullAddress   String
+  ward          String
+  district      String
+  province      String
+  phoneReceiver String
+  nameReceiver  String
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+// ==================== PRODUCT SYSTEM ====================
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?   @db.Text
+  image       String?
+  parentId    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  parent   Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryToCategory")
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  description     String?  @db.Text
+  images          Json     // Array of image URLs
+  categoryId      String
+  metaTitle       String?
+  metaDescription String?  @db.Text
+  metaKeywords    String?  @db.Text
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  category       Category           @relation(fields: [categoryId], references: [id])
+  variants       ProductVariant[]
+  reviews        Review[]
+  wishlists      Wishlist[]
+
+  @@index([categoryId])
+  @@map("products")
+}
+
+model ProductVariant {
+  id          String   @id @default(uuid())
+  productId   String
+  size        Size
+  price       Decimal  @db.Decimal(10, 2)
+  description String?  @db.Text
+  stock       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+
+  @@index([productId])
+  @@map("product_variants")
+}
+
+enum Size {
+  S
+  M
+  L
+}
+
+model Wishlist {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([userId])
+  @@index([productId])
+  @@map("wishlists")
+}
+
+// ==================== REVIEWS ====================
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  rating    Int      // 1-5
+  comment   String   @db.Text
+  images    Json?    // Array of image URLs
+  isHidden  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product    Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  adminReply AdminReply?
+
+  @@index([userId])
+  @@index([productId])
+  @@map("reviews")
+}
+
+model AdminReply {
+  id        String   @id @default(uuid())
+  reviewId  String   @unique
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+  @@map("admin_replies")
+}
+
+// ==================== ORDERS ====================
+model Order {
+  id          String      @id @default(uuid())
+  userId      String
+  status      OrderStatus @default(PENDING)
+  total       Decimal     @db.Decimal(10, 2)
+  note        String?     @db.Text
+  messageCard String?     @db.Text
+  senderType  SenderType  @default(NAMED) // Người gửi ẩn danh hay không
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id])
+  receiver     OrderReceiver?
+  items        OrderItem[]
+  payment      Payment?
+
+  @@index([userId])
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  DELIVERING
+  COMPLETED
+  CANCELLED
+}
+
+enum SenderType {
+  NAMED      // Gửi kèm tên người gửi
+  ANONYMOUS  // Ẩn danh
+}
+
+model OrderReceiver {
+  id           String   @id @default(uuid())
+  orderId      String   @unique
+  name         String
+  phone        String
+  address      String   @db.Text
+  deliveryDate DateTime
+  deliverySlot String   // 8-10h, 10-12h, 14-16h, 16-18h
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_receivers")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  variantId String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2) // Giá tại thời điểm đặt
+  addons    Json?    // Addon như thiệp, gấu bông, etc.
+  createdAt DateTime @default(now())
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@index([orderId])
+  @@index([variantId])
+  @@map("order_items")
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  orderId   String        @unique
+  status    PaymentStatus @default(PENDING)
+  method    PaymentMethod
+  amount    Decimal       @db.Decimal(10, 2)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  COD
+  BANK_TRANSFER
+  MOMO
+  VNPAY
+}
+
+// ==================== MARKETING & BANNER ====================
+model Voucher {
+  id          String       @id @default(uuid())
+  code        String       @unique
+  description String?      @db.Text
+  type        VoucherType
+  value       Decimal      @db.Decimal(10, 2) // Giá trị giảm (% hoặc số tiền)
+  minOrder    Decimal?     @db.Decimal(10, 2) // Đơn hàng tối thiểu
+  maxDiscount Decimal?     @db.Decimal(10, 2) // Giảm tối đa (cho % discount)
+  startDate   DateTime
+  endDate     DateTime
+  quantity    Int          @default(0) // Số lượng voucher
+  used        Int          @default(0) // Đã sử dụng
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("vouchers")
+}
+
+enum VoucherType {
+  PERCENTAGE  // Giảm %
+  FIXED       // Giảm số tiền cố định
+}
+
+model Banner {
+  id          String   @id @default(uuid())
+  title       String
+  image       String
+  link        String?
+  description String?  @db.Text
+  order       Int      @default(0) // Thứ tự hiển thị
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("banners")
+}
+
